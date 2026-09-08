@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id" class="">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Efromatika · Penilaian Peserta</title>
+
+<!-- Tailwind (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            DEFAULT: '#FFE600',
+            50: '#FFFDE6',
+            100: '#FFFAB8',
+            200: '#FFF480',
+            300: '#FFEE4D',
+            400: '#FFE600',
+            500: '#E6CF00',
+            600: '#B8A600',
+            700: '#8A7C00',
+            900: '#4D4500'
+          },
+          ink: {
+            50:  '#F7F7F8',
+            100: '#ECEDEF',
+            200: '#D5D7DC',
+            300: '#AEB2BB',
+            400: '#7C818C',
+            500: '#5A5F69',
+            600: '#3F434C',
+            700: '#2C2F36',
+            800: '#1D1F24',
+            900: '#121317'
+          }
+        },
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="font-sans bg-ink-50 dark:bg-ink-900 text-ink-800 dark:text-ink-100 min-h-screen transition-colors duration-300">
+
+<!-- ============ THEME TOGGLE (floating, global) ============ -->
+<button id="themeToggle" aria-label="Ganti tema" title="Ganti tema"
+  class="fixed z-50 bottom-5 right-5 md:bottom-6 md:right-6 h-12 w-12 rounded-2xl bg-white dark:bg-ink-800 border-2 border-ink-900 dark:border-brand shadow-[4px_4px_0_0_#1D1F24] dark:shadow-[4px_4px_0_0_#FFE600] flex items-center justify-center hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1D1F24] dark:hover:shadow-[6px_6px_0_0_#FFE600] transition-all">
+  <svg id="iconSun" class="h-6 w-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.42-1.42M7.05 7.05 5.64 5.64m12.72 0-1.42 1.42M7.05 16.95l-1.41 1.41M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+  <svg id="iconMoon" class="h-6 w-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646Z"/></svg>
+</button>
+
+<!-- ============ TOAST ============ -->
+<div id="toast" class="fixed z-[60] top-5 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl border-2 border-ink-900 bg-white text-ink-900 font-semibold text-sm shadow-[4px_4px_0_0_#1D1F24] opacity-0 pointer-events-none transition-all duration-300"></div>
+
+<!-- ============ APP ROOT ============ -->
+<div id="app" class="min-h-screen"></div>
+
+<!-- ============ TEMPLATES ============ -->
+
+<template id="tpl-loading">
+  <div class="min-h-screen flex flex-col items-center justify-center gap-4">
+    <div class="h-10 w-10 border-4 border-ink-900 dark:border-brand border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-sm font-mono uppercase tracking-widest text-ink-500 dark:text-ink-300">Memuat sesi…</p>
+  </div>
+</template>
+
+<template id="tpl-login">
+  <div class="min-h-screen grid md:grid-cols-2">
+    <div class="hidden md:flex flex-col justify-between bg-ink-900 text-white p-12 relative overflow-hidden">
+      <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand/20 blur-3xl"></div>
+      <div class="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-brand/10 blur-3xl"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-2">
+          <div class="h-10 w-10 rounded-xl bg-brand flex items-center justify-center font-mono font-extrabold text-ink-900">E</div>
+          <span class="font-extrabold text-lg tracking-tight">Efromatika</span>
+        </div>
+      </div>
+      <div class="relative z-10 space-y-4">
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand">Sistem Penilaian Peserta</p>
+        <h1 class="text-4xl font-extrabold leading-tight">Komisi Disiplin &amp; Mentor,<br/>dalam satu papan kerja.</h1>
+        <p class="text-ink-300 max-w-sm">Catat pelanggaran, nilai perkembangan tiap pertemuan, dan pantau seluruh kelompok — tersinkron langsung ke Google Spreadsheet.</p>
+      </div>
+      <p class="relative z-10 text-xs text-ink-400 font-mono">© 2026 Efromatika · Internal Use Only</p>
+    </div>
+
+    <div class="flex items-center justify-center p-6 sm:p-10">
+      <div class="w-full max-w-sm space-y-8">
+        <div class="md:hidden flex items-center gap-2 justify-center mb-2">
+          <div class="h-9 w-9 rounded-xl bg-brand flex items-center justify-center font-mono font-extrabold text-ink-900">E</div>
+          <span class="font-extrabold text-lg">Efromatika</span>
+        </div>
+        <div>
+          <h2 class="text-2xl font-extrabold">Masuk ke akun kamu</h2>
+          <p class="text-sm text-ink-500 dark:text-ink-300 mt-1">Gunakan email panitia yang sudah terdaftar.</p>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Email</label>
+            <input required type="email" id="loginEmail" autocomplete="username"
+              class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-4 py-3 outline-none focus:border-ink-900 dark:focus:border-brand transition-colors"
+              placeholder="nama@efromatika.org" />
+          </div>
+          <div>
+            <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Kata sandi</label>
+            <input required type="password" id="loginPassword" autocomplete="current-password"
+              class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-4 py-3 outline-none focus:border-ink-900 dark:focus:border-brand transition-colors"
+              placeholder="••••••••" />
+          </div>
+          <p id="loginError" class="hidden text-sm text-red-600 dark:text-red-400 font-medium"></p>
+          <button type="submit" id="loginSubmit"
+            class="w-full rounded-xl bg-ink-900 dark:bg-brand text-white dark:text-ink-900 font-bold py-3 border-2 border-ink-900 dark:border-brand shadow-[4px_4px_0_0_#FFE600] dark:shadow-[4px_4px_0_0_#1D1F24] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#FFE600] dark:hover:shadow-[6px_6px_0_0_#1D1F24] active:translate-y-0 active:shadow-none transition-all">
+            Masuk
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-shell">
+  <div class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-40 border-b-2 border-ink-900/10 dark:border-white/10 bg-ink-50/90 dark:bg-ink-900/90 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2 cursor-pointer" id="brandHome">
+          <div class="h-8 w-8 rounded-lg bg-brand flex items-center justify-center font-mono font-extrabold text-ink-900 text-sm">E</div>
+          <span class="font-extrabold tracking-tight hidden sm:inline">Efromatika</span>
+          <span id="roleBadge" class="ml-2 text-[10px] font-mono uppercase tracking-widest px-2 py-1 rounded-full bg-ink-900 text-brand dark:bg-brand dark:text-ink-900"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="userEmail" class="text-xs text-ink-500 dark:text-ink-300 hidden sm:inline font-mono"></span>
+          <button id="logoutBtn" class="text-sm font-semibold px-3 py-2 rounded-lg border-2 border-ink-900 dark:border-white/30 hover:bg-ink-900 hover:text-white dark:hover:bg-white/10 transition-colors">Keluar</button>
+        </div>
+      </div>
+    </header>
+    <main id="mainView" class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8"></main>
+  </div>
+</template>
+
+<template id="tpl-forbidden">
+  <div class="flex flex-col items-center justify-center py-24 gap-3 text-center">
+    <div class="h-16 w-16 rounded-2xl bg-ink-900 dark:bg-brand text-brand dark:text-ink-900 flex items-center justify-center text-3xl font-black">!</div>
+    <h2 class="text-xl font-extrabold">Kamu tidak punya akses ke halaman ini</h2>
+    <p class="text-ink-500 dark:text-ink-300 max-w-sm">Hubungi admin jika menurutmu ini keliru.</p>
+  </div>
+</template>
+
+<template id="tpl-home">
+  <div class="space-y-8">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand-700 dark:text-brand">Dashboard</p>
+      <h1 class="text-3xl font-extrabold mt-1">Pilih menu penilaian</h1>
+    </div>
+    <div id="homeCards" class="grid sm:grid-cols-2 gap-5"></div>
+  </div>
+</template>
+
+<template id="tpl-group-grid">
+  <div class="space-y-6">
+    <div class="flex items-center gap-3">
+      <button data-back class="h-9 w-9 rounded-lg border-2 border-ink-900 dark:border-white/30 flex items-center justify-center hover:bg-ink-900 hover:text-white dark:hover:bg-white/10 transition-colors">←</button>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand-700 dark:text-brand" id="groupGridEyebrow"></p>
+        <h1 class="text-2xl font-extrabold" id="groupGridTitle"></h1>
+      </div>
+    </div>
+    <div id="groupCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</template>
+
+<template id="tpl-komdis-table">
+  <div class="space-y-6">
+    <div class="flex items-center gap-3">
+      <button data-back class="h-9 w-9 rounded-lg border-2 border-ink-900 dark:border-white/30 flex items-center justify-center hover:bg-ink-900 hover:text-white dark:hover:bg-white/10 transition-colors">←</button>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand-700 dark:text-brand">Komisi Disiplin</p>
+        <h1 class="text-2xl font-extrabold" id="komdisTitle"></h1>
+      </div>
+      <span id="komdisLoadState" class="ml-auto text-xs font-mono text-ink-400"></span>
+    </div>
+    <div class="overflow-x-auto rounded-2xl border-2 border-ink-900/10 dark:border-white/10">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-ink-900 text-white dark:bg-ink-800">
+            <th class="sticky left-0 bg-ink-900 dark:bg-ink-800 px-3 py-3 text-left font-semibold min-w-[64px]">NIM</th>
+            <th class="sticky left-[64px] bg-ink-900 dark:bg-ink-800 px-3 py-3 text-left font-semibold min-w-[180px]">Nama</th>
+            <th id="komdisHeadRow" colspan="10" class="px-2 py-3 text-center font-semibold">Pertemuan</th>
+          </tr>
+          <tr class="bg-ink-800 text-brand text-xs font-mono">
+            <th class="sticky left-0 bg-ink-800"></th>
+            <th class="sticky left-[64px] bg-ink-800"></th>
+            <!-- 10 numbered sub-columns injected -->
+          </tr>
+        </thead>
+        <tbody id="komdisBody" class="divide-y divide-ink-900/10 dark:divide-white/10"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Floating add button -->
+  <button id="addViolationBtn" class="fixed bottom-6 right-24 md:right-28 z-40 h-14 w-14 rounded-2xl bg-brand text-ink-900 border-2 border-ink-900 shadow-[4px_4px_0_0_#1D1F24] hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1D1F24] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center text-2xl font-black">+</button>
+</template>
+
+<template id="tpl-mentor-meetings">
+  <div class="space-y-6">
+    <div class="flex items-center gap-3">
+      <button data-back class="h-9 w-9 rounded-lg border-2 border-ink-900 dark:border-white/30 flex items-center justify-center hover:bg-ink-900 hover:text-white dark:hover:bg-white/10 transition-colors">←</button>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand-700 dark:text-brand">Mentor</p>
+        <h1 class="text-2xl font-extrabold" id="mentorMeetingsTitle"></h1>
+      </div>
+    </div>
+    <div id="meetingCards" class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4"></div>
+  </div>
+</template>
+
+<template id="tpl-mentor-table">
+  <div class="space-y-6">
+    <div class="flex items-center gap-3 flex-wrap">
+      <button data-back class="h-9 w-9 rounded-lg border-2 border-ink-900 dark:border-white/30 flex items-center justify-center hover:bg-ink-900 hover:text-white dark:hover:bg-white/10 transition-colors">←</button>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-brand-700 dark:text-brand">Mentor</p>
+        <h1 class="text-2xl font-extrabold" id="mentorTableTitle"></h1>
+      </div>
+      <span id="mentorLoadState" class="text-xs font-mono text-ink-400"></span>
+      <button id="mentorSaveBtn" class="ml-auto rounded-xl bg-ink-900 dark:bg-brand text-white dark:text-ink-900 font-bold px-4 py-2 border-2 border-ink-900 dark:border-brand shadow-[3px_3px_0_0_#FFE600] dark:shadow-[3px_3px_0_0_#1D1F24] hover:-translate-y-0.5 transition-all text-sm">Simpan Penilaian</button>
+    </div>
+    <div class="overflow-x-auto rounded-2xl border-2 border-ink-900/10 dark:border-white/10">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="bg-ink-900 text-white dark:bg-ink-800 text-xs font-mono uppercase">
+            <th class="sticky left-0 bg-ink-900 dark:bg-ink-800 px-3 py-3 text-left min-w-[64px]">NIM</th>
+            <th class="sticky left-[64px] bg-ink-900 dark:bg-ink-800 px-3 py-3 text-left min-w-[180px]">Nama</th>
+            <th class="px-2 py-3 min-w-[90px]">Keaktifan</th>
+            <th class="px-2 py-3 min-w-[90px]">Loyalitas</th>
+            <th class="px-2 py-3 min-w-[90px]">Tugas</th>
+            <th class="px-2 py-3 min-w-[100px]">Kedisiplinan</th>
+            <th class="px-2 py-3 min-w-[90px]">Kehadiran</th>
+            <th class="px-2 py-3 min-w-[100px]">Kerjasama</th>
+            <th class="px-2 py-3 min-w-[110px]">Penerapan 5S</th>
+          </tr>
+        </thead>
+        <tbody id="mentorBody" class="divide-y divide-ink-900/10 dark:divide-white/10"></tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<!-- Modal: add violation -->
+<div id="modalOverlay" class="fixed inset-0 z-50 hidden bg-ink-900/60 backdrop-blur-sm items-center justify-center p-4">
+  <div class="bg-white dark:bg-ink-800 rounded-2xl border-2 border-ink-900 dark:border-white/20 shadow-[6px_6px_0_0_#1D1F24] dark:shadow-none w-full max-w-md p-6 space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="font-extrabold text-lg">Tambah Pelanggaran</h3>
+      <button id="modalClose" class="h-8 w-8 rounded-lg hover:bg-ink-100 dark:hover:bg-white/10 flex items-center justify-center">✕</button>
+    </div>
+    <form id="violationForm" class="space-y-4">
+      <div>
+        <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Peserta</label>
+        <select id="violationParticipant" required class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-3 py-2.5 outline-none focus:border-ink-900 dark:focus:border-brand"></select>
+      </div>
+      <div>
+        <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Pertemuan</label>
+        <select id="violationMeeting" required class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-3 py-2.5 outline-none focus:border-ink-900 dark:focus:border-brand"></select>
+      </div>
+      <div>
+        <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Jenis Pelanggaran</label>
+        <select id="violationType" required class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-3 py-2.5 outline-none focus:border-ink-900 dark:focus:border-brand">
+          <option>Ringan</option>
+          <option>Sedang Kategori I</option>
+          <option>Sedang Kategori II</option>
+          <option>Berat</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Tanggal (opsional)</label>
+        <input type="date" id="violationDate" class="mt-1 w-full rounded-xl border-2 border-ink-200 dark:border-ink-600 bg-white dark:bg-ink-800 px-3 py-2.5 outline-none focus:border-ink-900 dark:focus:border-brand" />
+      </div>
+      <div>
+        <label class="text-xs font-mono uppercase tracking-wider text-ink-500 dark:text-ink-300">Bukti Pelanggaran (file)</label>
+        <input type="file" id="violationFile" class="mt-1 w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-ink-900 file:text-white dark:file:bg-brand dark:file:text-ink-900 file:px-3 file:py-2 file:font-semibold" />
+        <p class="text-[11px] text-ink-400 mt-1">Disimpan ke Google Drive: {Kelompok}/{Nama}-{NIM}/{file}</p>
+      </div>
+      <p id="violationError" class="hidden text-sm text-red-600 dark:text-red-400 font-medium"></p>
+      <button type="submit" id="violationSubmit" class="w-full rounded-xl bg-ink-900 dark:bg-brand text-white dark:text-ink-900 font-bold py-3 border-2 border-ink-900 dark:border-brand hover:-translate-y-0.5 transition-all">
+        Simpan Pelanggaran
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ FIREBASE (modular v10, CDN) ============ -->
+<script type="module" src="firebase-init.js"></script>
+<script src="script.js" defer></script>
+</body>
+</html>

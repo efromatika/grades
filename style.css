@@ -1,0 +1,86 @@
+/* style.css — small supplement to Tailwind utility classes */
+
+* {
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+}
+
+table input, table select {
+  width: 100%;
+}
+
+/* Score cell inputs inside the mentor table */
+.score-input {
+  width: 100%;
+  text-align: center;
+  border-radius: 0.5rem;
+  border: 2px solid transparent;
+  background: rgba(0,0,0,0.04);
+  padding: 0.4rem 0.25rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color .15s ease, background .15s ease;
+}
+.dark .score-input {
+  background: rgba(255,255,255,0.06);
+  color: #F7F7F8;
+}
+.score-input:focus {
+  border-color: #1D1F24;
+  background: #fff;
+}
+.dark .score-input:focus {
+  border-color: #FFE600;
+  background: rgba(255,255,255,0.1);
+}
+.score-input.dirty {
+  border-color: #FFE600;
+}
+
+/* Violation badge dots inside komdis table */
+.violation-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: default;
+}
+.v-ringan { background: #FFF4B8; color: #7A6A00; }
+.dark .v-ringan { background: #4D4500; color: #FFE600; }
+.v-sedang1 { background: #FFE1B8; color: #8A4E00; }
+.dark .v-sedang1 { background: #5C3300; color: #FFB870; }
+.v-sedang2 { background: #FFC9B8; color: #8A2E00; }
+.dark .v-sedang2 { background: #5C1F00; color: #FF9C7A; }
+.v-berat { background: #FFB8B8; color: #8A0000; }
+.dark .v-berat { background: #5C0000; color: #FF8A8A; }
+.v-none { background: transparent; }
+
+/* Group card lock overlay for inaccessible groups */
+.group-card.locked {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, -12px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+#toast.show {
+  animation: toast-in 0.2s ease-out forwards;
+}
