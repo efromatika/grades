@@ -10,37 +10,37 @@
 
 // URL Web App hasil deploy Google Apps Script (lihat apps-script/Code.gs
 // dan README.md untuk cara deploy).
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJrRQ87Tm0nXKO1AuZDPUPtJ6QAcpjc3iFqz3KofPjmQ41brNkfXnfBufQam40zDaasg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXgDTcQ_bjX8d22_xI2_eN-sXbyeAz1OSgIpHmgPU1zaWOc6UpWzQKgTxhcMtweRCsCQ/exec";
 
 // Email yang tidak boleh login sama sekali.
 const blacklist = [ ];
 
 // Email yang boleh membuka menu Penilaian Komdis.
-const komdis_account = [ "admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'fazri.komdis@efro.id', 'mdaffa.komdis@efro.id', 'porman.komdis@efro.id', 'primsa.komdis@efro.id', 'nazwa.komdis@efro.id', 'annisa.komdis@efro.id', 'astri.komdis@efro.id' ];
+const komdis_account = [ "admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'fazri.komdis@efro.id', 'mdaffa.komdis@efro.id', 'porman.komdis@efro.id', 'primsa.komdis@efro.id', 'nazwa.komdis@efro.id', 'annisa.komdis@efro.id', 'astri.komdis@efro.id' ];
 
 // Email yang boleh membuka menu Penilaian Mentor.
-const mentor_account = [ "admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'amelia.mentor@efro.id', 'herviana.mentor@efro.id', 'theresia.mentor@efro.id', 'shintia.mentor@efro.id', 'aniela.mentor@efro.id', 'winda.mentor@efro.id', 'asyita.mentor@efro.id', 'anatasya.mentor@efro.id' ];
+const mentor_account = [ "admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'amelia.mentor@efro.id', 'herviana.mentor@efro.id', 'theresia.mentor@efro.id', 'shintia.mentor@efro.id', 'aniela.mentor@efro.id', 'winda.mentor@efro.id', 'asyita.mentor@efro.id', 'anatasya.mentor@efro.id' ];
 
 // Komdis per kelompok: hanya email di dalam array boleh membuka kelompok itu.
 const komdis_group = {
-  1: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'primsa.komdis@efro.id'],
-  2: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'mdaffa.komdis@efro.id'],
-  3: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'fazri.komdis@efro.id'],
-  4: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'porman.komdis@efro.id'],
-  5: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'annisa.komdis@efro.id'],
-  6: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'astri.komdis@efro.id'],
-  7: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'nazwa.komdis@efro.id']
+  1: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'primsa.komdis@efro.id'],
+  2: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'mdaffa.komdis@efro.id'],
+  3: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'fazri.komdis@efro.id'],
+  4: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'porman.komdis@efro.id'],
+  5: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'annisa.komdis@efro.id'],
+  6: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'astri.komdis@efro.id'],
+  7: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'nazwa.komdis@efro.id']
 };
 
 // Mentor per kelompok: hanya email di dalam array boleh membuka kelompok itu.
 const mentor_group = {
-  1: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'asyita.mentor@efro.id'],
-  2: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'theresia.mentor@efro.id'],
-  3: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'anatasya.mentor@efro.id'],
-  4: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'shintia.mentor@efro.id'],
-  5: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'herviana.mentor@efro.id'],
-  6: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'aniela.mentor@efro.id'],
-  7: ["admin@efro.id", 'difa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'winda.mentor@efro.id']
+  1: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'asyita.mentor@efro.id'],
+  2: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'theresia.mentor@efro.id'],
+  3: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'anatasya.mentor@efro.id'],
+  4: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'shintia.mentor@efro.id'],
+  5: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'herviana.mentor@efro.id'],
+  6: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'aniela.mentor@efro.id'],
+  7: ["admin@efro.id", 'dipa.subdep@efro.id', 'annisa.subdep@efro.id', 'ropaska.subdep@efro.id', 'daniel.subdep@efro.id', 'boy.subdep@efro.id', 'winda.mentor@efro.id']
 };
 
 // Daftar peserta. Format: NIM -> { name, group }
@@ -472,6 +472,20 @@ const violationAbbr = {
   "Sedang Kategori II": "S2",
   "Berat": "B"
 };
+// Higher = more severe. Used to pick the badge color when a participant
+// has more than one violation in the same pertemuan.
+const violationSeverity = {
+  "Ringan": 1,
+  "Sedang Kategori I": 2,
+  "Sedang Kategori II": 3,
+  "Berat": 4
+};
+
+function worstViolation(list) {
+  return list.reduce((worst, v) =>
+    (violationSeverity[v.type] || 0) > (violationSeverity[worst.type] || 0) ? v : worst
+  , list[0]);
+}
 
 async function renderKomdisTable(main, group) {
   main.appendChild(clone("tpl-komdis-table"));
@@ -518,17 +532,27 @@ function renderKomdisRows(tbody, participants, violations) {
     const cells = [];
     cells.push(`<td class="sticky left-0 bg-white dark:bg-ink-900 px-3 py-2 font-mono text-xs">${p.nim}</td>`);
     cells.push(`<td class="sticky left-[64px] bg-white dark:bg-ink-900 px-3 py-2 font-semibold">${p.name}</td>`);
+
+    let total = 0;
     for (let m = 1; m <= MEETING_COUNT; m++) {
-      const v = (violations[p.nim] || {})[m];
-      if (v) {
-        const cls = violationClass[v.type] || "";
-        const label = violationAbbr[v.type] || "?";
-        const title = `${v.type}${v.date ? " · " + v.date : ""}`;
+      const list = (violations[p.nim] || {})[m] || [];
+      if (list.length) {
+        total += list.length;
+        const worst = worstViolation(list);
+        const cls = violationClass[worst.type] || "";
+        const label = list.length > 1 ? String(list.length) : (violationAbbr[worst.type] || "?");
+        const title = list
+          .map((v) => `${v.type}${v.date ? " · " + v.date : ""}`)
+          .join("\n");
         cells.push(`<td class="px-2 py-2 text-center"><span class="violation-dot ${cls}" title="${title}">${label}</span></td>`);
       } else {
         cells.push(`<td class="px-2 py-2 text-center"><span class="violation-dot v-none">·</span></td>`);
       }
     }
+
+    const totalCls = total > 0 ? "bg-ink-900 text-brand dark:bg-brand dark:text-ink-900" : "text-ink-400 dark:text-ink-500";
+    cells.push(`<td class="px-3 py-2 text-center font-bold"><span class="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-1 rounded-lg text-xs ${totalCls}">${total}</span></td>`);
+
     tr.innerHTML = cells.join("");
     tbody.appendChild(tr);
   });
@@ -604,7 +628,8 @@ function openViolationModal(group) {
       // Update local cache + table immediately (optimistic).
       state.violationsCache[group] = state.violationsCache[group] || {};
       state.violationsCache[group][nim] = state.violationsCache[group][nim] || {};
-      state.violationsCache[group][nim][meeting] = { type, date };
+      state.violationsCache[group][nim][meeting] = state.violationsCache[group][nim][meeting] || [];
+      state.violationsCache[group][nim][meeting].push({ type, date });
       const tbody = document.getElementById("komdisBody");
       if (tbody) renderKomdisRows(tbody, participantsInGroup(group), state.violationsCache[group]);
 
@@ -714,7 +739,6 @@ async function renderMentorTable(main, group, meeting) {
 
     try {
       await postToAppsScript({ action: "saveMentorScores", group, meeting, rows });
-      console.log(rows)
       tbody.querySelectorAll(".dirty").forEach((el) => el.classList.remove("dirty"));
       toast("Penilaian tersimpan.", "success");
     } catch (err) {
